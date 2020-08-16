@@ -178,6 +178,11 @@ export class randomizer
     {
         for (let aPerson of this._listOfPeople)
             aPerson.reset();
+
+        this._bagOfPeople = [];
+        this._lastPersonNamePicked = '';
+        this._bagOfThemeColors = [];
+        this._lastThemeIDPicked = -1;           
     }
 
 

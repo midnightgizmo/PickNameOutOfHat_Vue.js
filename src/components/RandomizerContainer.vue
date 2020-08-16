@@ -110,7 +110,7 @@ export default class Setup extends Vue
             align-self: center;
             // align text horizontaly
             justify-self: center;
-            font-size:8rem;
+            font-size:6rem;
             color:white;
         }
         

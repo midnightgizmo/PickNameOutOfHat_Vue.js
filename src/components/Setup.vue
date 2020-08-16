@@ -38,8 +38,8 @@ export default class Setup extends Vue
     private txtNewName? : HTMLInputElement;
     private showStartButton : boolean = false;
 
-    @Prop({default:true})
-    ShowSetup? : boolean;
+    //@Prop({default:true})
+    //ShowSetup? : boolean;
 
     @Prop({default:new randomizer()})
     Randomizer? : randomizer;
@@ -57,7 +57,7 @@ export default class Setup extends Vue
     
     cmd_Start()
     {
-        this.ShowSetup = !this.ShowSetup;
+        //this.ShowSetup = !this.ShowSetup;
         //this.test = (this.$refs["txtNewName"] as HTMLInputElement).value;
         this.$emit('setupVsibility_HideContainer');
         
@@ -103,7 +103,7 @@ export default class Setup extends Vue
         
     }
 
-    @Watch('ShowSetup')
+    /*@Watch('ShowSetup')
     ShowSetup_Changed(newValue:boolean, oldValue:boolean)
     {
         if(newValue)
@@ -114,21 +114,25 @@ export default class Setup extends Vue
         { // we want this component to be hidden
 
         }
-    }
+    }*/
 
      // add the name to the randomizer and UI
     private AddPerson(name :string)
     {
         if(name.length > 0)
         {
-            // add name to randamizer
-            if(this.Randomizer.addPerson(name))
+            // the !! operator checks if this.Randomizer is not null or undefined
+            if(!!this.Randomizer)
             {
-                
-                this.showStartButton = true; 
-                
-                // resave the data to local storage because a name was added.
-                //saveToLocalStorageData(Randomizer);
+                // add name to randamizer
+                if(this.Randomizer.addPerson(name))
+                {
+                    
+                    this.showStartButton = true; 
+                    
+                    // resave the data to local storage because a name was added.
+                    //saveToLocalStorageData(Randomizer);
+                }
             }
             
 

@@ -2,9 +2,10 @@
 
         <section id="randomizer-container">
             <button id="cmdFinish" @click="cmdFinish_Click">Finish</button>
-            <div>
+            <div v-bind:style="{ color: foregroundColor, 'background-color': backgroundColor }">
                 <div></div>
-                <div id="lblName" ref="lblName"></div>
+                <div id="lblName" ref="lblName"
+                    v-bind:style="{ color: foregroundColor}"></div>
                 <div></div>
             </div>
             <button id="cmdNext" @click="cmdNext_Click">Next</button>
@@ -26,6 +27,9 @@ export default class Setup extends Vue
 
     @Prop({default:new randomizer()})
     Randomizer? : randomizer;
+
+    public backgroundColor : string = 'black';
+    public foregroundColor : string = 'white';
 
     // this is an internal Vue function that gets called when the Component gets mounted.
     // It is the first opertuity we have to access any html elements in the <template/>
@@ -56,7 +60,13 @@ export default class Setup extends Vue
     {
         if(this.lblName != undefined)
             if(this.Randomizer != undefined)
-                this.lblName.innerText = this.Randomizer.getNextRandomPerson().name
+            {
+                let randomPerson = this.Randomizer.getNextRandomPerson();
+
+                this.lblName.innerText = randomPerson.name;
+                this.backgroundColor = randomPerson.Colors.backgroundColor;
+                this.foregroundColor = randomPerson.Colors.foregroundColor;
+            }
     }
     
 

@@ -2,11 +2,38 @@ export class randomizer
 {
     private _listOfPeople : personData[];
     private _bagOfPeople : personData[];
+    private _lastPersonNamePicked : string = '';
+
+    // a list of colors we can use for each person (holds a background and foreground color)
+    private _listOfThemeColors : colorTheme[];
+    private _bagOfThemeColors : colorTheme[];
+    // lets us know the last theme that was used.
+    // Usefull so that we don't pick the same color twice in a row.
+    private _lastThemeIDPicked : number = -1;
 
     constructor() 
     {
         this._listOfPeople = [];
         this._bagOfPeople = [];
+        
+        this._listOfThemeColors = [];
+        this._bagOfThemeColors = [];
+
+        let aTheme : colorTheme;
+        
+        aTheme = new colorTheme();
+        aTheme.backgroundColor = "#B5834A";
+        aTheme.foregroundColor = "white";
+        aTheme.id = 0;
+
+        this._listOfThemeColors.push(aTheme);
+
+        aTheme = new colorTheme();
+        aTheme.backgroundColor = "#47B862";
+        aTheme.foregroundColor = "white";
+        aTheme.id = 1;
+
+        this._listOfThemeColors.push(aTheme);
     }
 
     
@@ -82,14 +109,24 @@ export class randomizer
         // from this._listOfPeople
         if(this._bagOfPeople.length == 0)
             this._bagOfPeople = this._listOfPeople.slice();
+
+        // make sure there is some colors to pick from, if not, copy all the
+        // theme colors from this._listOfThemeColors;
+        if(this._bagOfThemeColors.length == 0)
+            this._bagOfThemeColors = this._listOfThemeColors.slice();
         
-        // if there is only one left in the bag then randomNumber must be zero
+        // if there is only one left in the bag of people, then randomNumber must be zero
         if(this._bagOfPeople.length == 1)
             randomNumber = 0;
         else
         {
             // get a number between zero and total number of peopel in _bagOfPeople
             randomNumber = this.getRandomNumber(0,this._bagOfPeople.length-1);
+            // make sure we are not picking the same person that is currently 
+            // displayed on the screen.
+            while(this._bagOfPeople[randomNumber].name == this._lastPersonNamePicked)
+                randomNumber = this.getRandomNumber(0,this._bagOfPeople.length-1);
+
         }
 
         // use the randoNumber to get the person
@@ -97,9 +134,39 @@ export class randomizer
         // incorment the numberOfTimesPicked by one because this person was picked
         aPerson.numberOfTimesPicked++;
 
+        // set the last person name picked to the current person that was picked.
+        this._lastPersonNamePicked = aPerson.name;
+
         // remove the person from the bagOfPeople so they can't be picked again
         // until the bag becomes empty
         this._bagOfPeople.splice(randomNumber,1);
+
+        // get a random color theme
+
+        // if there is only one theme color left in the bag, then randomNumber must be zero
+        if(this._bagOfThemeColors.length == 1)
+            randomNumber = 0;
+        else
+        {
+            // get a number between zero and the total number of theme colors left in the bag
+            randomNumber = this.getRandomNumber(0,this._bagOfThemeColors.length - 1);
+            // make sure we are not picking the same theme color that is currently 
+            // displayed on the screen.
+            while(this._bagOfThemeColors[randomNumber].id == this._lastThemeIDPicked)
+                randomNumber = this.getRandomNumber(0,this._bagOfThemeColors.length - 1);
+        }
+        
+        // the random theme color that has been picked
+        let theme = this._bagOfThemeColors[randomNumber];
+        // set the last theme id to the current one we just randomly picked.
+        this._lastThemeIDPicked = theme.id;
+        // give the person the color themes to use
+        aPerson.Colors.backgroundColor = theme.backgroundColor;
+        aPerson.Colors.foregroundColor = theme.foregroundColor;
+
+        // remove the theme color from the BagOfThemeColors so it can't be picked again
+        // until the bag becomes empty
+        this._bagOfThemeColors.splice(randomNumber,1);
         
         // return the picked person
         return aPerson;
@@ -145,6 +212,7 @@ class personData
     constructor() {
         this._name = "";
         this._numberOfTimesPicked = 0;
+        this._Colors = new colorTheme();
     }
     ///////////////////////
     // name (get/set)
@@ -174,7 +242,70 @@ class personData
     {
         this.numberOfTimesPicked = 0;
     }
+
+
     
+    private _Colors : colorTheme;
+    public get Colors() : colorTheme {
+        return this._Colors;
+    }
+    public set Colors(v : colorTheme) {
+        this._Colors = v;
+    }
+    
+    
+    
+    
+    
+}
+
+/**
+ * Holds background and foreground colors to use
+ * when showing a users name that is picked from a hat.
+ */
+class colorTheme
+{
+    
+    constructor() 
+    {
+        this._backgroundColor = "black";
+        this._foregroundColor = "white";
+        this._id = 0;
+    }
+    
+    private _backgroundColor : string;
+    public get backgroundColor() : string 
+    {
+        return this._backgroundColor;
+    }
+    public set backgroundColor(v : string) 
+    {
+        this._backgroundColor = v;
+    }
+
+
+    
+    private _foregroundColor : string;
+    public get foregroundColor() : string 
+    {
+        return this._foregroundColor;
+    }
+    public set foregroundColor(v : string) 
+    {
+        this._foregroundColor = v;
+    }
+
+
+
+
+    
+    private _id : number;
+    public get id() : number {
+        return this._id;
+    }
+    public set id(v : number) {
+        this._id = v;
+    }
     
     
     
